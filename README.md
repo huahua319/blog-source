@@ -12,6 +12,7 @@
 
 - [USAGE.md](USAGE.md) — 日常操作速查手册
 - [SPEC.md](SPEC.md) — 工程说明（面向维护者 / AI）
+- [AGENTS.md](AGENTS.md) — 跨 AI 工具的起手指引
 
 ## 技术栈
 

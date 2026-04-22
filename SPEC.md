@@ -108,6 +108,8 @@ blog/
 ├── .github/
 │   └── dependabot.yml          # GitHub 依赖自动更新（每周，上限 20 PR）
 ├── .gitignore                   # 排除构建产物、依赖、临时文件
+├── AGENTS.md                    # 跨 AI 工具起手指引（Codex / Cursor / Claude Code 等均读）
+├── CLAUDE.md                    # Claude Code 特有补充（指向 AGENTS.md）
 ├── README.md                    # 面向读者的项目说明
 ├── SPEC.md                      # 本文件，面向维护者 / AI 的工程文档
 ├── USAGE.md                     # 日常操作速查手册
