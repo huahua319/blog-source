@@ -65,7 +65,7 @@
 |---|---|---|---|
 | Hexo | `^8.0.0` | `8.1.1`（`package.json` `hexo.version` 字段） | 静态站点生成器 |
 | NexT 主题 | `^8.27.0` | 同上量级 | 当前使用的主题 |
-| Node.js | 未硬性声明 | 本地 `v24.14.0`（开发者机） | 运行时，建议 ≥ 20 |
+| Node.js | `>=20`（`engines.node`） | 本地 `v24.14.0`（开发者机） | 运行时 |
 | npm | 随 Node | `11.9.0`（开发者机） | 包管理 |
 
 **已安装的 Hexo 相关依赖（全部来自 `package.json`）**：
@@ -91,12 +91,11 @@
 
 主题：
 - `hexo-theme-next` — **当前使用**
-- `hexo-theme-landscape` — **未使用**，由 `hexo init` 引入，当前留在依赖中。删除它不会影响站点，但建议保留现状以避免不必要的改动（见 §9 第 4 条）
 
 **关键事实**：
 
 - 主题来源是 `node_modules/hexo-theme-next/`，**不是** `themes/` 目录。本仓库 `themes/` 仅含 `.gitkeep` 占位
-- `.github/dependabot.yml` 已启用：每天检查 npm 依赖，最多同时开 20 个 PR。作者可选择合并或关闭该自动化
+- `.github/dependabot.yml` 已启用：每周检查 npm 依赖，最多同时开 20 个 PR。作者可选择合并或关闭该自动化
 
 ---
 
@@ -107,12 +106,11 @@
 ```
 blog/
 ├── .github/
-│   └── dependabot.yml          # GitHub 依赖自动更新（每日，上限 20 PR）
+│   └── dependabot.yml          # GitHub 依赖自动更新（每周，上限 20 PR）
 ├── .gitignore                   # 排除构建产物、依赖、临时文件
 ├── README.md                    # 面向读者的项目说明
 ├── SPEC.md                      # 本文件，面向维护者 / AI 的工程文档
 ├── USAGE.md                     # 日常操作速查手册
-├── _config.landscape.yml        # 空文件（0 字节），landscape 主题遗留占位，保留
 ├── _config.next.yml             # NexT 主题配置（Alternate Config 模式）
 ├── _config.yml                  # Hexo 站点主配置
 ├── package.json                 # npm 依赖清单 + scripts
@@ -138,7 +136,6 @@ blog/
 - `source/_drafts/` 目录**当前不存在**。它只在首次执行 `hexo new draft <名>` 时由 Hexo 自动创建。默认 `render_drafts: false`，草稿不会进入 `public/`
 - `source/images/` 目录**当前不存在**。若要加图片，作者需要手动创建，或考虑启用 `post_asset_folder`（见 §6）
 - `.gitignore` 中 `.deploy*/` 对应 `hexo-deployer-git` 的临时目录 `.deploy_git/`
-- `_config.landscape.yml` 是 0 字节空文件。由 `hexo init` 默认生成，保留无害；若确认不再切回 landscape 主题，可安全删除，但**非必要不动**
 
 ---
 
@@ -285,7 +282,7 @@ tags:                        # 建议填
 
 ### 7.3 当前 NexT 已启用 / 未启用功能清单
 
-基于 `_config.next.yml` 实际状态（便于后续维护者快速了解现状，不必重读 916 行配置）。
+基于 `_config.next.yml` 实际状态（便于后续维护者快速了解现状，不必重读 915 行配置）。
 
 **已启用**：
 
@@ -426,7 +423,7 @@ git push
    - 是否有替代的 `_config.next.yml` 原生配置能达到 80% 效果
    - 体积与维护状态（末次提交近一年内）
 
-5. **不主动修改已有依赖结构**。`hexo-theme-landscape` 当前在依赖中未被使用，不要为"整洁"去删它。它无副作用，删除带来的收益远小于破坏 starter 结构后续可能的兼容风险。若未来确定长期不切回去再说。
+5. **不随意改变已有依赖结构**。新增或删除依赖前先评估：是否确认无任何隐式引用、无 starter 兼容负担、无未来合理切回的可能。小博客长期维护的首要价值是稳定性，不是依赖列表的整洁度。确认完毕后再动手。
 
 6. **永远以实际文件为准**。`README.md` / `USAGE.md` 可能过时，改动前若发现与实际不符，**先信配置再信文档**，并顺手更新文档（或在 commit 信息里记一笔）。
 
@@ -434,12 +431,20 @@ git push
 
 8. **静态站点仓库不手动编辑**。`huahua319.github.io` 仓库只接收 `hexo deploy` 的推送，任何手动提交会被下次部署覆盖。
 
-9. **重要改动先更新 SPEC**。如果一次修改改变了以下之一，请在本 SPEC 对应章节同步更新：
+9. **重要改动后必须同步文档**。凡是修改了以下任一内容，提交前都必须检查并在必要时同步更新 `README.md`、`USAGE.md`、`SPEC.md`：
+   - 用户可见功能
+   - 配置方式
+   - 安装或使用命令
+   - 发布流程
    - 目录结构
    - 依赖列表
    - 主题方案或 scheme
-   - 发布流程
-   - 分类约定
+   - 写作 / 维护约定（如分类约定）
+
+   判断标准：
+   - 会影响"读者如何使用这个项目"的，优先更新 `README.md`
+   - 会影响"作者日常如何操作"的，优先更新 `USAGE.md`
+   - 会影响"维护者 / AI 应如何理解和修改项目"的，优先更新 `SPEC.md`
 
 10. **保留草稿隐私意识**。`source/_drafts/` 虽然不渲染进 `public/`，但会随 `git push` 进入本仓库。若某些草稿涉及隐私，考虑不 push，或用本地另一分支。
 
@@ -583,21 +588,32 @@ git push
 
 ### 12.1 `README.md` 与实际文件的不一致
 
-| 项 | README 的说法 | 实际 | 建议处理 |
-|---|---|---|---|
-| Hexo 版本 | "Hexo 7.x" | `package.json` 声明 `^8.0.0`，锁定字段 `hexo.version: 8.1.1` | **README 错，应改为 Hexo 8.x** |
-| `source/_drafts/` | 写在目录树里 | 当前**不存在**，仅在 `hexo new draft` 首次创建时出现 | README 应加注"（按需生成）" |
-| `USAGE.md` | 未提及 | 实际存在，是日常速查手册 | README 文档列表可补充一行 |
-| npm scripts | 未提及 | `package.json` 有 `build/clean/deploy/server` 四个 script | README 命令章节可补充对应 `npm run` 形式 |
-| `hexo-theme-landscape` | 未提及 | 实际仍在 `dependencies` 中，未使用 | README 可忽略；本 SPEC §3 已注明 |
+历史上曾存在以下不一致，已于 **2026-04-22** 同步修正（README 已更新）：
 
-维护策略：本 SPEC 之后如需修正 README，顺手改掉上述项；但**不要为了"对齐 SPEC"而大改 README**，README 面向读者、SPEC 面向维护者，可以各有侧重。
+| 项 | 曾经的不一致 | 修正方式 |
+|---|---|---|
+| Hexo 版本 | README 写"Hexo 7.x"，实际 `^8.0.0` / 锁定 `8.1.1` | README 改为 "Hexo 8.x" |
+| `source/_drafts/` | README 目录树直接列出，实际按需生成 | 目录树注释加"（按需生成）" |
+| `USAGE.md` | README 未提及 | README 顶部新增"相关文档"小节，链到 `USAGE.md` 与 `SPEC.md` |
+| npm scripts | README 未提及 `build/clean/deploy/server` | README 命令表新增"npm 等价"列 |
+
+当前**仍存在且有意保留**的不一致：_（当前无）_
+
+维护策略：README 面向读者、SPEC 面向维护者，允许各有侧重。发现不一致时按以下原则处理：
+
+- **事实性错误**（版本号、目录缺失、命令写错等）：同步修正 README
+- **工程细节**（未启用的依赖、构建产物路径、内部约定等）：保留在 SPEC，不必回灌 README
+- 不要为了"对齐 SPEC"而大改 README
 
 ### 12.2 待确认项
 
-- **Node.js 最低版本**：`package.json` 未声明 `engines.node`。当前开发机 Node 24.14.0 正常跑通，文档建议 ≥ 20。若未来在更低版本机器上遇到问题，需明确上限下限并在 `package.json` 补 `engines`。（**待确认**）
-- **`hexo-theme-landscape` 的最终去留**：如果长期不会切回来，可以 `npm uninstall hexo-theme-landscape` 并删除 `_config.landscape.yml`，减少依赖体积。当前保守保留。（**待确认**）
-- **`dependabot.yml` 策略**：目前是每日检查、上限 20 PR。对个人博客而言可能 PR 过多打扰。若觉得烦可改为每周（`interval: weekly`）或关闭。（**待确认**）
+已确认处理：
+
+- **Node.js 最低版本**（2026-04-22 处理）：已在 `package.json` 补 `"engines": { "node": ">=20" }`，与文档建议一致。非 strict 模式下低版本安装会给警告。
+- **`hexo-theme-landscape` 清理**（2026-04-22 处理）：已 `npm uninstall hexo-theme-landscape` 并删除 `_config.landscape.yml`。确认无任何引用；若未来需要切回 landscape，一行 `npm install` 即可还原。
+- **`dependabot.yml` 策略**（2026-04-22 处理）：检查频率从 `daily` 改为 `weekly`，`open-pull-requests-limit: 20` 保持不变。个人博客场景下每周批处理更合理。
+
+_（当前无待确认项）_
 
 ---
 

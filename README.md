@@ -8,11 +8,16 @@
 - **源码仓库**（本仓库）：<https://github.com/huahua319/blog-source>
 - **静态站点仓库**：<https://github.com/huahua319/huahua319.github.io>
 
+## 相关文档
+
+- [USAGE.md](USAGE.md) — 日常操作速查手册
+- [SPEC.md](SPEC.md) — 工程说明（面向维护者 / AI）
+
 ## 技术栈
 
 | 组件 | 版本 | 说明 |
 |---|---|---|
-| Hexo | 7.x | 静态站点生成器 |
+| Hexo | 8.x | 静态站点生成器 |
 | NexT | 8.27 | 主题（Gemini 双栏配色） |
 | Node.js | ≥ 20 | 运行环境 |
 
@@ -47,7 +52,6 @@
 blog/
 ├── _config.yml              # 站点主配置（标题、作者、URL、部署）
 ├── _config.next.yml         # NexT 主题配置（外观、菜单、侧栏、搜索）
-├── _config.landscape.yml    # 默认主题遗留文件，未使用
 ├── package.json             # npm 依赖清单
 ├── package-lock.json        # 依赖锁定
 ├── .gitignore               # 排除 node_modules/、public/、.deploy_git/、db.json
@@ -59,7 +63,7 @@ blog/
 │   └── draft.md             #   新建草稿 (hexo new draft)
 ├── source/                  # 内容源（全部为 Markdown）
 │   ├── _posts/              #   已发布文章
-│   ├── _drafts/             #   草稿（默认不渲染）
+│   ├── _drafts/             #   草稿（默认不渲染，按需生成）
 │   ├── about/index.md       #   关于页
 │   ├── categories/index.md  #   分类索引页（type: categories）
 │   └── tags/index.md        #   标签索引页（type: tags）
@@ -183,17 +187,17 @@ local_search:
 
 ## 常用命令
 
-| 命令 | 作用 |
-|---|---|
-| `hexo new post "<标题>"` | 新建文章 |
-| `hexo new page <名>` | 新建独立页面（如 about） |
-| `hexo new draft "<标题>"` | 新建草稿（不会发布） |
-| `hexo publish "<草稿名>"` | 把草稿转为正式文章 |
-| `hexo clean` | 清除缓存和 `public/` |
-| `hexo g` | 生成静态文件 |
-| `hexo s` | 本地预览（默认 4000） |
-| `hexo d` | 部署到 GitHub Pages |
-| `hexo list post` | 列出所有文章 |
+| 命令 | 作用 | npm 等价 |
+|---|---|---|
+| `hexo new post "<标题>"` | 新建文章 | — |
+| `hexo new page <名>` | 新建独立页面（如 about） | — |
+| `hexo new draft "<标题>"` | 新建草稿（不会发布） | — |
+| `hexo publish "<草稿名>"` | 把草稿转为正式文章 | — |
+| `hexo clean` | 清除缓存和 `public/` | `npm run clean` |
+| `hexo g` | 生成静态文件 | `npm run build` |
+| `hexo s` | 本地预览（默认 4000） | `npm run server` |
+| `hexo d` | 部署到 GitHub Pages | `npm run deploy` |
+| `hexo list post` | 列出所有文章 | — |
 
 ## 环境前置
 
@@ -214,7 +218,7 @@ local_search:
 - **自定义域名**：在 GitHub Pages `Settings → Pages → Custom domain` 绑定，并在 `source/CNAME` 文件中写入域名
 - **图床**：[PicGo](https://picgo.github.io/PicGo-Doc/) + GitHub 仓库做图床
 - **访问统计**：不蒜子 / Umami / Cloudflare Web Analytics
-- **SEO**：已启用 `sitemap.xml` 和 `feed.xml`（RSS），可提交到搜索引擎站长平台
+- **SEO**：已启用 `sitemap.xml` 和 `atom.xml`（RSS），可提交到搜索引擎站长平台
 - **数学公式**：在 `_config.next.yml` 中启用 KaTeX 或 MathJax
 - **图表**：开启 Mermaid 支持写流程图
 
