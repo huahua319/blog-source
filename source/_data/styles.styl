@@ -1,0 +1,58 @@
+// ==========================================
+// 自定义样式文件 (已净化)
+// ==========================================
+
+// --- 1. 主色调修改 (克莱因蓝) ---
+$custom-blue = #3b74a8;
+$custom-blue-light = #f0f5fa;
+$custom-blue-hover = #2b567d;
+
+a {
+  color: $custom-blue;
+  &:hover { color: $custom-blue-hover; }
+}
+
+.btn {
+  background: transparent;
+  color: $custom-blue;
+  border-color: $custom-blue;
+  &:hover {
+    background: $custom-blue;
+    color: white;
+    border-color: $custom-blue;
+  }
+}
+
+.menu-item-active a,
+.sidebar-nav li.sidebar-nav-active {
+  color: $custom-blue;
+  border-bottom-color: $custom-blue;
+}
+
+.post-title-link::before {
+  background-color: $custom-blue;
+}
+
+// --- 2. 卡片微圆角化 ---
+.post-block, .sidebar-inner, .header-inner, .comments {
+  border-radius: 8px !important;
+}
+
+.use-motion .post-block, .use-motion .sidebar-inner, .use-motion .header-inner {
+  border-radius: 8px !important;
+}
+
+img { border-radius: 8px; }
+
+.post-tags a {
+  border-radius: 4px;
+  padding: 1px 5px;
+  background: $custom-blue-light;
+  border-bottom: none;
+  font-size: 0.85em;
+  &:hover { background: $custom-blue; color: white; }
+}
+
+// --- 3. 宽度优化 (更安全的变量覆盖方式) ---
+// 在 styles.styl 顶部我们可以覆盖 NexT 的 Stylus 变量
+
