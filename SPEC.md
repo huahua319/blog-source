@@ -121,6 +121,9 @@ blog/
 │   ├── draft.md                 # 草稿模板：title + tags（无 date）
 │   ├── page.md                  # 独立页面模板：title + date
 │   └── post.md                  # 文章模板：title + date + tags（无 categories）
+├── source/_data/                # NexT 覆盖配置
+│   ├── styles.styl              # 自定义 CSS 样式（主色调、圆角等）
+│   └── variables.styl           # 覆盖 NexT 布局宽度变量
 ├── source/                      # 所有内容源（全部是 Markdown）
 │   ├── _posts/                  # 已发布文章（文件名 = slug）
 │   │   ├── hello-world.md       # hexo init 自带示例，未分类
@@ -129,6 +132,8 @@ blog/
 │   ├── about/index.md           # 关于页
 │   ├── categories/index.md      # 分类索引页（front-matter 带 type: categories）
 │   └── tags/index.md            # 标签索引页（front-matter 带 type: tags）
+│   ├── images/                  # 图片及静态资源
+│   │   └── avatar.jpg           # 用户头像
 └── themes/
     └── .gitkeep                 # 占位；NexT 主题实际在 node_modules/ 下
 ```
@@ -291,7 +296,7 @@ tags:                        # 建议填
 - `scheme: Gemini`
 - `darkmode: true`（暗黑模式）
 - 顶部菜单：home / about / tags / categories / archives（带图标）
-- 侧栏：左侧，双栏模式 240px，文章页展开
+- 侧栏：左侧，双栏模式（自定义为 85% 宽屏）
 - `site_state: true`（侧栏显示文章/分类/标签计数）
 - `toc.enable: true`（自动目录，max_depth: 6，自动编号）
 - `back2top.enable: true`
@@ -554,7 +559,7 @@ git push
 
 - 方案 A：在 `_config.yml` 设 `post_asset_folder: true`，每篇文章有独立资源目录
 - 方案 B：接入图床（PicGo + 七牛云 / 阿里云 OSS / Cloudflare R2），URL 直接用外链
-- 当前没有图片，不必提前决定
+- 当前 `source/images/` 存放了头像资源
 
 ### 11.6 数学公式 / 图表（按需）
 
