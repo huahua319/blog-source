@@ -196,7 +196,7 @@ local_search:
 | `hexo publish "<草稿名>"` | 把草稿转为正式文章 | — |
 | `hexo clean` | 清除缓存和 `public/` | `npm run clean` |
 | `hexo g` | 生成静态文件 | `npm run build` |
-| `hexo s` | 本地预览（默认 4000） | `npm run server` |
+| `hexo s` | 本地预览（默认 4000） | `npm run server` <br> `npm run dev` (带热重载) |
 | `hexo d` | 部署到 GitHub Pages | `npm run deploy` |
 | `hexo list post` | 列出所有文章 | — |
 
