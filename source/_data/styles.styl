@@ -34,7 +34,7 @@ a {
 }
 
 // --- 2. 卡片微圆角化 ---
-.post-block, .sidebar-inner, .header-inner, .comments {
+.post-block, .sidebar-inner, .header-inner, .comments, .main-inner {
   border-radius: 8px !important;
 }
 
@@ -56,4 +56,27 @@ img { border-radius: 8px !important; }
 // 圆形头像
 .site-author-image {
   border-radius: 50% !important;
+}
+
+// --- 3. 主页文章卡片流：每篇文章独立卡片 ---
+// 首页 .main-inner 同时带 .posts-expand 类，让它透明化，下层卡片浮起来
+.main-inner.posts-expand {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.posts-expand > .post-block {
+  background: #fff !important;
+  border-radius: 8px !important;
+  padding: 30px 40px !important;
+  margin-bottom: 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+// 暗黑模式适配（NexT 用 prefers-color-scheme 跟随系统）
+@media (prefers-color-scheme: dark) {
+  .posts-expand > .post-block {
+    background: #2a2a2a !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
 }

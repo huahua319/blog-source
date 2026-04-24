@@ -174,7 +174,7 @@ blog/
 | 图片资源策略 | `_config.yml` | `post_asset_folder`（现为 `false`） |
 | 代码高亮后端 | `_config.yml` | `syntax_highlighter: highlight.js` |
 | 当前主题 | `_config.yml` | `theme: next` |
-| 配色方案 | `_config.next.yml` | `scheme`（现为 `Gemini`） |
+| 配色方案 | `_config.next.yml` | `scheme`（现为 `Pisces`） |
 | 暗黑模式 | `_config.next.yml` | `darkmode: true` |
 | 顶部菜单 | `_config.next.yml` | `menu`（现 5 项：home/about/tags/categories/archives） |
 | 侧栏位置 / 宽度 / 社交图标 | `_config.next.yml` | `sidebar` / `social` / `avatar` |
@@ -276,7 +276,7 @@ tags:                        # 建议填
 
 - 使用 **NexT 8.27**，通过 `npm install hexo-theme-next` 安装，实际文件在 `node_modules/hexo-theme-next/`
 - 使用 **Alternate Config 模式**：项目根的 `_config.next.yml` 独立于 `node_modules/hexo-theme-next/_config.yml`，Hexo 会合并加载
-- 当前 scheme：`Gemini`（双栏，侧栏固定在左，桌面侧栏宽 240px）
+- 当前 scheme：`Pisces`（双栏，侧栏固定在左，桌面侧栏宽 240px）
 
 ### 7.2 修改优先级：配置 → 主题覆盖 → 源码
 
@@ -293,7 +293,7 @@ tags:                        # 建议填
 
 **已启用**：
 
-- `scheme: Gemini`
+- `scheme: Pisces`
 - `darkmode: true`（暗黑模式）
 - 顶部菜单：home / about / tags / categories / archives（带图标）
 - 侧栏：左侧，双栏模式（自定义为 85% 宽屏）
@@ -307,7 +307,6 @@ tags:                        # 建议填
 - `post_navigation: left`（上一篇/下一篇）
 - `open_graph.enable: true`（社交卡片元信息）
 - `excerpt_description: true` + `read_more_btn: true`（首页摘要与"阅读全文"按钮）
-- `creative_commons.license: by-nc-sa`（**但 `sidebar` 和 `post` 均为 false**，当前不在页面上显示许可徽章）
 - `codeblock.theme`：亮色 `default`、暗色 `stackoverflow-dark`；prism 对应 `prism` / `prism-dark`
 
 **未启用（需要才打开）**：
@@ -413,6 +412,20 @@ git push
 
 **注意**：`hexo clean` 只在改过配置 / 主题 / 插件后必需；仅新增文章时可省略（但加上也无害）。
 
+### 8.5 AI 代理的本地预览行为
+
+本节规则**只对 AI 编码代理**（Claude Code 等）生效，不约束作者手动操作。设立动机：让作者可以在代理完成改动后立即在浏览器看到效果，而不必每次都手动敲 `hexo clean && hexo g && hexo s`。
+
+**规则**：
+
+1. **改动完成后自动启动本地预览**。无论是站点层（`_config.yml` / `_config.next.yml` / `source/_data/*.styl` / `scaffolds/` / `package.json` / 主题相关）还是内容层（`source/**/*.md`）改动完成后，代理必须在后台启动 `npm run dev`（基于 nodemon，自动监听配置 / Stylus / njk 变动并执行 `hexo clean && hexo g && hexo s`）。
+2. **已运行则不重启**。若 `npm run dev`（或 `hexo server`）已在后台运行，代理应复用，不要重复启动多个实例。后续的 yml/styl/njk 改动由 nodemon 自动触发重建。
+3. **只启动本地预览，不自动部署**。`hexo deploy` / `npm run deploy` **永远不自动执行**。仅在用户明确表达"发布 / 部署 / deploy / 上线 / 推到线上"等意图时，代理才可执行，且执行前应复述一次动作供用户确认。
+4. **报告预览信息**。启动后告诉用户预览地址（默认 `http://localhost:4000`）和"浏览器 Ctrl+F5 刷新查看"；若首次构建报错，附带错误摘要。
+5. **会话结束前不主动关闭**。后台的 `npm run dev` 默认保留运行，除非用户要求停止。
+
+**与 §8.4 典型开发循环的关系**：§8.4 描述作者本人的手动流程；本节描述 AI 代理协作时的自动化流程。两者不冲突——代理自动做前两步（生成 + 本地预览），第三步（`hexo deploy`）始终由作者发指令。
+
 ---
 
 ## 9. 修改原则
@@ -455,6 +468,8 @@ git push
    - 会影响"维护者 / AI 应如何理解和修改项目"的，优先更新 `SPEC.md`
 
 10. **保留草稿隐私意识**。`source/_drafts/` 虽然不渲染进 `public/`，但会随 `git push` 进入本仓库。若某些草稿涉及隐私，考虑不 push，或用本地另一分支。
+
+11. **AI 代理负责本地预览自动化，但不自动部署**。代理完成改动后应在后台启动 `npm run dev`（若未运行），方便作者立即在浏览器刷新查看；`hexo deploy` / `npm run deploy` 仅在作者明确指示时才执行。详见 §8.5。
 
 ---
 
