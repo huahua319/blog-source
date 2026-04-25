@@ -282,7 +282,7 @@ tags:                        # 建议填
 改动请按以下顺序尝试，**越靠前越优先**：
 
 1. **改 `_config.next.yml`**：绝大多数外观 / 功能开关都在这里（菜单、侧栏、搜索、暗黑模式、代码块主题、动画、字体等）
-2. **覆盖主题的部分模板或样式**：在 `source/_data/` 下建对应文件，再到 `_config.next.yml` 的 `custom_file_path` 里取消注释对应项。当前 `custom_file_path` 全部注释，**`source/_data/` 目录不存在**。如需深度自定义再建
+2. **覆盖主题的部分模板或样式**：在 `source/_data/` 下建对应文件，再到 `_config.next.yml` 的 `custom_file_path` 里取消注释对应项。当前已启用 `style: source/_data/styles.styl`；`source/_data/` 含 `styles.styl`（自定义 CSS：主色调、圆角、卡片流等）和 `variables.styl`（覆盖 NexT 布局宽度变量）。其他模板（`head` / `header` / `sidebar` / `footer` / `bodyEnd` 等）仍全部注释，如需深度自定义再启用
 3. **写自定义样式**：通过 `custom_file_path.style` 指向 `source/_data/styles.styl` 添加 Stylus 片段（不改主题源码）
 4. **最后才考虑**直接改 `node_modules/hexo-theme-next/` 源码 — **强烈不推荐**，会被下次 `npm install` 覆盖
 
