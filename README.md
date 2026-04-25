@@ -19,7 +19,7 @@
 | 组件 | 版本 | 说明 |
 |---|---|---|
 | Hexo | 8.x | 静态站点生成器 |
-| NexT | 8.27 | 主题（Gemini 双栏配色） |
+| NexT | 8.27 | 主题（Pisces 双栏配色） |
 | Node.js | ≥ 20 | 运行环境 |
 
 已启用插件：本地搜索、RSS、sitemap、字数统计。
@@ -65,9 +65,12 @@ blog/
 ├── source/                  # 内容源（全部为 Markdown）
 │   ├── _posts/              #   已发布文章
 │   ├── _drafts/             #   草稿（默认不渲染，按需生成）
+│   ├── _data/               #   NexT 样式覆盖（styles.styl / variables.styl）
 │   ├── about/index.md       #   关于页
 │   ├── categories/index.md  #   分类索引页（type: categories）
-│   └── tags/index.md        #   标签索引页（type: tags）
+│   ├── tags/index.md        #   标签索引页（type: tags）
+│   ├── images/              #   图片静态资源（头像等）
+│   └── 404.md               #   404 页面
 └── themes/                  # 主题目录（NexT 已通过 npm 安装，此处为空）
 ```
 
@@ -171,7 +174,7 @@ deploy:
 常改字段：
 
 ```yaml
-scheme: Gemini            # 配色方案：Muse / Mist / Pisces / Gemini
+scheme: Pisces            # 配色方案：Muse / Mist / Pisces / Gemini
 menu:                     # 顶部导航
   home: / || fa fa-home
   about: /about/ || fa fa-user

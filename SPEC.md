@@ -126,9 +126,9 @@ blog/
 │   └── variables.styl           # 覆盖 NexT 布局宽度变量
 ├── source/                      # 所有内容源（全部是 Markdown）
 │   ├── _posts/                  # 已发布文章（文件名 = slug）
-│   │   ├── hello-world.md       # hexo init 自带示例，未分类
 │   │   ├── 开始写博客的理由.md  # 随笔示例
 │   │   └── 我的第一篇技术笔记.md # 技术示例
+│   ├── 404.md                   # 404 页面（permalink: /404.html）
 │   ├── about/index.md           # 关于页
 │   ├── categories/index.md      # 分类索引页（front-matter 带 type: categories）
 │   └── tags/index.md            # 标签索引页（front-matter 带 type: tags）
@@ -141,7 +141,6 @@ blog/
 **几个需要特别说明的点**：
 
 - `source/_drafts/` 目录**当前不存在**。它只在首次执行 `hexo new draft <名>` 时由 Hexo 自动创建。默认 `render_drafts: false`，草稿不会进入 `public/`
-- `source/images/` 目录**当前不存在**。若要加图片，作者需要手动创建，或考虑启用 `post_asset_folder`（见 §6）
 - `.gitignore` 中 `.deploy*/` 对应 `hexo-deployer-git` 的临时目录 `.deploy_git/`
 
 ---
@@ -308,6 +307,9 @@ tags:                        # 建议填
 - `open_graph.enable: true`（社交卡片元信息）
 - `excerpt_description: true` + `read_more_btn: true`（首页摘要与"阅读全文"按钮）
 - `codeblock.theme`：亮色 `default`、暗色 `stackoverflow-dark`；prism 对应 `prism` / `prism-dark`
+- `codeblock.copy_button.enable: true`（代码块复制按钮，样式 `default`）
+- `pangu: true`（中英文之间自动加空格，提升中文排版）
+- `social`：侧栏已启用 `GitHub`（`https://github.com/huahua319`）
 
 **未启用（需要才打开）**：
 
@@ -316,12 +318,11 @@ tags:                        # 建议填
 - 数学公式：`math.mathjax.enable` / `math.katex.enable` 都是 `false`（开启需同时安装对应的 `hexo-filter-*` 依赖）
 - 图表：`mermaid.enable` / `wavedrom.enable` / `pdf.enable` 均 `false`
 - 外部字体：`font.enable: false`
-- 其他动效：`pjax` / `fancybox` / `mediumzoom` / `lazyload` / `pangu` / `quicklink` / `pace` / `canvas_ribbon` 均关闭
+- 其他动效：`pjax` / `fancybox` / `mediumzoom` / `lazyload` / `quicklink` / `pace` / `canvas_ribbon` 均关闭
 - 打赏：`reward_settings.enable: false`
 - `github_banner` / `reading_progress` / `bookmark` / `follow_me` / `related_posts` / `post_edit` 均关闭
 - `footer.beian.enable: false`（无 ICP / 公安备案信息）
-- `social` 和 `links` 两处列表全部注释未填
-- `avatar.url` 未设置
+- `links`（友链）全部注释未填
 
 **资源加载**：`vendors.internal: local`（NexT 内部脚本走本地），`vendors.plugins: cdnjs`（第三方插件走 CDN）
 
@@ -423,6 +424,13 @@ git push
 3. **只启动本地预览，不自动部署**。`hexo deploy` / `npm run deploy` **永远不自动执行**。仅在用户明确表达"发布 / 部署 / deploy / 上线 / 推到线上"等意图时，代理才可执行，且执行前应复述一次动作供用户确认。
 4. **报告预览信息**。启动后告诉用户预览地址（默认 `http://localhost:4000`）和"浏览器 Ctrl+F5 刷新查看"；若首次构建报错，附带错误摘要。
 5. **会话结束前不主动关闭**。后台的 `npm run dev` 默认保留运行，除非用户要求停止。
+
+**Windows 下端口冲突恢复**（已知异常路径，详见 [CLAUDE_LEARNINGS.md](CLAUDE_LEARNINGS.md) §6）：nodemon 重启时若旧 `hexo server` 未被 kill 干净（Windows 信号机制限制），新进程会因 4000 端口已被占用而 crash，nodemon 输出 `app crashed - waiting for file changes`。代理遇到时按以下步骤恢复：
+
+1. `TaskStop` 停掉 nodemon 任务（或终端 Ctrl+C）
+2. `netstat -ano | grep -E ":4000\s"` 找占用 PID
+3. `taskkill //PID <pid> //F`（Git Bash 下双斜杠转义）
+4. `npm run dev` 重启
 
 **与 §8.4 典型开发循环的关系**：§8.4 描述作者本人的手动流程；本节描述 AI 代理协作时的自动化流程。两者不冲突——代理自动做前两步（生成 + 本地预览），第三步（`hexo deploy`）始终由作者发指令。
 

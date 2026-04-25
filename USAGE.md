@@ -102,7 +102,7 @@ author: 花花
 打开 `_config.next.yml`，常改项：
 
 ```yaml
-scheme: Gemini          # 换配色：Muse / Mist / Pisces / Gemini
+scheme: Pisces          # 换配色：Muse / Mist / Pisces / Gemini
 menu:                   # 顶部菜单项增减
   home: / || fa fa-home
   about: /about/ || fa fa-user

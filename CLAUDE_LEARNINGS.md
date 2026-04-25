@@ -35,3 +35,43 @@
   1. 修改 YAML 配置文件时必须格外注意缩进层级。
   2. 怀疑样式没生效时，第一反应应是使用 `grep` 检查生成的 `public/css/main.css` 中是否包含所写代码。
   3. 为了保险起见，覆写现有组件（如圆角、主色调）的 CSS，最后都带上 `!important` 权重。
+
+## 6. Windows 下 nodemon 重启时 hexo server 残留导致 4000 端口冲突（高频，重点）
+
+- **现象**：在 Windows 下 `npm run dev`，每次保存 `_config.next.yml` / `source/_data/*.styl` / `*.njk` 触发 nodemon restart 时，新一轮 `hexo server` 报 `Error: listen EADDRINUSE: address already in use :::4000`，nodemon 输出 `[nodemon] app crashed - waiting for file changes before starting...`。**本次单一会话中遇到 3 次**。
+- **根本原因**：
+  - `package.json` 的 `dev` 脚本是 `nodemon ... --exec "hexo clean && hexo generate && hexo server"`，是 shell `&&` 链
+  - nodemon 重启时给子 shell 发信号，但 **Windows 没有 POSIX 信号机制**，shell 不一定把信号转发给最深层的孙进程 `hexo server` (node.exe)
+  - 老 `hexo server` 进程留着没退出，4000 端口未释放，新启动失败
+- **应急恢复流程**（已多次验证）：
+  1. `TaskStop`（Claude Code 后台任务）或终端里 `Ctrl+C` 停掉 nodemon 任务
+  2. `netstat -ano | grep -E ":4000\s"` 找占用端口的 PID（取最后一列）
+  3. `taskkill //PID <pid> //F` 强制终止（**Git Bash 下必须双斜杠 `//`**，避免被路径转换成单斜杠）
+  4. `cd C:/Users/hua/blog && npm run dev` 重启（前台或 `run_in_background: true`）
+- **快速诊断技巧**：
+  - 改完 yml/styl 后浏览器 Ctrl+F5 没变化 → 先 `curl -s -o /dev/null -w "%{http_code}\n" http://localhost:4000/`
+  - HTTP 200 但内容陈旧 → 大概率 nodemon 崩了，旧 `hexo server` 还在跑老 in-memory router
+  - 此时也可以 `cat` 后台任务的输出看末尾是否有 `app crashed - waiting for file changes` 字样
+  - `curl http://localhost:4000/中文路径/` 会触发 `URIError: URI malformed`（hexo-server 默认 `decodeURIComponent` 不容错），改用 Python `urllib.parse.quote` 先编码再请求
+- **未实施的根治建议**（属于站点层改动，需作者明确决策再做）：
+  - 改 `dev` 脚本为 `concurrently` + `kill-port`：每次启动前先 `kill-port 4000` 再启 nodemon
+  - 或引入 `tree-kill`（npm 包），让 nodemon 重启时终止整个进程树
+  - 现状是手动恢复，频率低于每天 1 次时尚可接受；高频出现时再升级
+
+## 7. Pisces 布局下"白底大卡片"是 `.main-inner` 而非 `.post-block`
+
+- **现象**：想给主页文章加 `border-radius` 圆角，覆盖 `.post-block` 后视觉无变化
+- **原因**：Pisces / Gemini scheme 默认结构是**所有文章共用一个外层 `.main-inner` 大卡片**（带白底 / padding / 阴影），每篇 `.post-block` 本身没有独立背景，只是内部分节
+- **正确做法**：
+  - 想给主白底加圆角 → 选择器 `.main-inner { border-radius: ... !important }`
+  - 想做"卡片流"（每篇独立卡片） → 给 `.main-inner.posts-expand` 设 `background: transparent !important`，再给 `.posts-expand > .post-block` 加白底 + padding + 阴影 + margin
+- **首页 scope 技巧**：首页的 `.main-inner` HTML 同时带 `.index .posts-expand` 两个类，可用 `.main-inner.posts-expand` 或 `.posts-expand > .post-block` 精准命中首页文章列表，避免影响文章详情页
+
+## 8. NexT 代码块复制按钮由前端 JS 注入，HTML 静态源里看不到
+
+- **现象**：开启 `codeblock.copy_button.enable: true` 后，`grep` `public/*.html` 找不到 `<button>` 或 `copy-btn` 元素，第一反应是"没生效"
+- **原因**：复制按钮由 `js/utils.js` 在浏览器加载时动态注入到每个 `<figure class="highlight">` 元素的右上角，服务端渲染的 HTML 不携带按钮
+- **判断方法**：
+  - 看 `public/js/utils.js` 是否含 `clipboard` / `copyCode` 关键字（NexT 8.x 有约 8 处）
+  - 或浏览器实际查看代码块右上角
+  - 排查时不要被静态 HTML 里的 `<div class="copyright">`（页脚版权块）误判为 "copy 元素"
